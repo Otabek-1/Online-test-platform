@@ -19,7 +19,7 @@ export default function Login() {
     
     api.post("/auth/login", { username, password })
       .then(res => {
-        console.log(res);
+        // console.log(res);
         
         setLoading(false)
         if (res.status === 200) {
@@ -32,12 +32,12 @@ export default function Login() {
         }
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         
         setLoading(false)
         const errorMsg = err.response?.data?.message || err.message || "Login/parol xato yoki server xatosi"
         setError(errorMsg)
-        console.log(err);
+        // console.log(err);
         
       })
   }

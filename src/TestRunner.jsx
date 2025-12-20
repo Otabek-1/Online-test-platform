@@ -14,7 +14,7 @@ export default function TestRunner() {
   const [sections, setSections] = useState([]);
   const [started, setStarted] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  console.log(sections);
+  // console.log(sections);
   
   const [userData, setUserData] = useState({
     full_name: "",
@@ -76,11 +76,11 @@ export default function TestRunner() {
         })),
       };
 
-      console.log("📤 Yuborilayotgan payload:", JSON.stringify(payload, null, 2));
+      // console.log("📤 Yuborilayotgan payload:", JSON.stringify(payload, null, 2));
 
       const response = await api.post("/job/submit", payload);
       
-      console.log("✅ Backend javobi:", response.data);
+      // console.log("✅ Backend javobi:", response.data);
 
       setSubmitted(true);
     } catch (err) {

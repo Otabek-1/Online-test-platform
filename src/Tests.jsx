@@ -51,7 +51,7 @@ export default function Tests() {
         const allQuestions = qRes.data?.data?.questions || [];
         const sectionQuestions = allQuestions.filter(q => q.section_id == sectionId);
         setQuestions(sectionQuestions);
-        console.log(`Section ${sectionId} uchun ${sectionQuestions.length} ta savol topildi`);
+        // console.log(`Section ${sectionId} uchun ${sectionQuestions.length} ta savol topildi`);
         setSection({ id: sectionId, name: `Bo'lim #${sectionId}` });
       } else {
         setError(qRes.error || "Savollarni olishda xatolik");
@@ -61,8 +61,8 @@ export default function Tests() {
       const oRes = await api.get("/option/list");
       if (oRes.status === 200 || (oRes.data && oRes.data.success)) {
         const allOptions = oRes.data?.data?.options || [];
-        console.log(`Jami ${allOptions.length} ta option topildi:`, allOptions);
-        console.log("Option question_ids:", allOptions.map(o => o.question_id));
+        // console.log(`Jami ${allOptions.length} ta option topildi:`, allOptions);
+        // console.log("Option question_ids:", allOptions.map(o => o.question_id));
         setOptions(allOptions);
       }
     } catch (err) {
@@ -74,7 +74,7 @@ export default function Tests() {
 
   function getOptionsForQuestion(questionId) {
     const qOpts = options.filter(o => o.question_id == questionId);
-    console.log(`Question ${questionId} uchun ${qOpts.length} ta option:`, qOpts);
+    // console.log(`Question ${questionId} uchun ${qOpts.length} ta option:`, qOpts);
     return qOpts;
   }
 
@@ -126,8 +126,8 @@ export default function Tests() {
       if (qRes.status === 200 || (qRes.data && qRes.data.success)) {
         // Try to get question ID from response
         let questionId = qRes.data?.data?.question?.id || qRes.data?.question?.id;
-        console.log("Question create response:", qRes.data);
-        console.log("QuestionId from response:", questionId);
+        // console.log("Question create response:", qRes.data);
+        // console.log("QuestionId from response:", questionId);
 
         // If no ID in response, fetch questions and find the newly created one
         if (!questionId) {
@@ -137,7 +137,7 @@ export default function Tests() {
             const newQ = allQuestions.find(q => q.text === questionText.trim());
             if (newQ) {
               questionId = newQ.id;
-              console.log("Found new question by text match:", questionId);
+              // console.log("Found new question by text match:", questionId);
             }
           }
         }
@@ -148,7 +148,7 @@ export default function Tests() {
           return;
         }
         
-        console.log("Will create options for questionId:", questionId);
+        // console.log("Will create options for questionId:", questionId);
 
         // Create options for this question
         const letters = ["A", "B", "C", "D"];
@@ -160,7 +160,7 @@ export default function Tests() {
               text: optionInputs[letter].trim(),
               is_correct: correctAnswer === letter,
             });
-            console.log(`Option ${letter} response:`, oRes);
+            // console.log(`Option ${letter} response:`, oRes);
             if (oRes.status === 200 || (oRes.data && oRes.data.success)) {
               optionsCreated++;
             } else {
@@ -171,7 +171,7 @@ export default function Tests() {
           }
         }
 
-        console.log(`${optionsCreated} ta option yaratildi`);
+        // console.log(`${optionsCreated} ta option yaratildi`);
 
         if (optionsCreated === 0) {
           setError("Savollar yaratildi lekin optsiyalar yaratilmadi");
