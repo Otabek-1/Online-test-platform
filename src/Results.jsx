@@ -320,24 +320,24 @@ export default function Results() {
                         {detailsData.name}
                       </p>
                     </div>
-                    <div>
+                    {/* <div>
                       <p className="text-sm text-slate-500">Email</p>
                       <p className="font-semibold text-slate-900">
                         {detailsData.email}
                       </p>
-                    </div>
+                    </div> */}
                     <div>
                       <p className="text-sm text-slate-500">Telefon</p>
                       <p className="font-semibold text-slate-900">
                         {detailsData.phone}
                       </p>
                     </div>
-                    <div>
+                    {/* <div>
                       <p className="text-sm text-slate-500">Telegram</p>
                       <p className="font-semibold text-slate-900">
                         {detailsData.telegram || "-"}
                       </p>
-                    </div>
+                    </div> */}
                     <div>
                       <p className="text-sm text-slate-500">Natija</p>
                       <p className="text-2xl font-bold text-green-600">
