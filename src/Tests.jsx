@@ -366,7 +366,7 @@ export default function Tests() {
               <Table>
                 <TableHeader>
                   <TableRow className="bg-gray-50">
-                    <TableHead className="w-16 text-xs">ID</TableHead>
+                    <TableHead className="w-16 text-xs">T/r</TableHead>
                     <TableHead className="text-xs">Savol matni</TableHead>
                     <TableHead className="w-20 text-center text-xs">A</TableHead>
                     <TableHead className="w-20 text-center text-xs">B</TableHead>
@@ -384,11 +384,11 @@ export default function Tests() {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    questions.map((q) => {
+                    questions.map((q,index) => {
                       const qOptions = getOptionsForQuestion(q.id);
                       return (
-                        <TableRow key={q.id} className="hover:bg-gray-50">
-                          <TableCell className="text-xs text-gray-600">{q.id}</TableCell>
+                        <TableRow key={index+1} className="hover:bg-gray-50">
+                          <TableCell className="text-xs text-gray-600">{index+1}</TableCell>
                           <TableCell className="max-w-xs text-xs text-gray-800 truncate">{q.text}</TableCell>
                           <TableCell className="text-center">
                             <div className="flex items-center justify-center gap-1">

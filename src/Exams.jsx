@@ -200,7 +200,8 @@ export default function Exams() {
             setError(err?.response?.data?.message || "Link olishda xatolik!");
         }
     }
-
+    // console.log(exams);
+    
 
     return (
         <div className="p-6">
