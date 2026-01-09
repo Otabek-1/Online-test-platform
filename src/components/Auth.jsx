@@ -67,7 +67,7 @@ export default function Login() {
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
               
               <div className="flex flex-col gap-2">
-                <Label htmlFor="username">Username</Label>
+                <Label htmlFor="username">Login</Label>
                 <Input
                   id="username"
                   placeholder="Login kiriting"
@@ -80,7 +80,7 @@ export default function Login() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">Parol</Label>
                 <Input
                   id="password"
                   type="password"
