@@ -93,8 +93,6 @@ export default function Tests() {
     ["A", "B", "C", "D"].forEach(letter => {
       if (!optionInputs[letter].trim()) {
         errors[letter] = `${letter} variantini kiriting`;
-      } else if (optionInputs[letter].trim().length < 2) {
-        errors[letter] = `${letter} variantini kamida 2 ta belgidan iborat bo'lishi kerak`;
       }
     });
 

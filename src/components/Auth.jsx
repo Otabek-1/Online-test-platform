@@ -94,7 +94,7 @@ export default function Login() {
               </div>
 
               <Button type="submit" className="w-full py-3 text-lg" disabled={loading}>
-                {loading ? "Kirilmoqda..." : "Login"}
+                {loading ? "Kirilmoqda..." : "Kirish"}
               </Button>
             </form>
           </CardContent>
