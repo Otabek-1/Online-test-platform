@@ -1,14 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FiBook, FiBarChart2, FiLogOut } from "react-icons/fi";
 import Exams from "./Exams";
 import Results from "./Results";
 import { useNavigate } from "react-router-dom";
 import { CardSim, WalletCards } from "lucide-react";
-import SectionList from "./SectionList";
+import logo from "./assets/logo.png"
 
 export default function Dashboard() {
-    const [active, setActive] = React.useState("exams");
+    const [active, setActive] =useState(localStorage.getItem("active") || "exams");
     const nav = useNavigate();
     function logOut(){
         localStorage.removeItem("access_token");
@@ -18,31 +18,23 @@ export default function Dashboard() {
     return (
         <div className="flex h-screen">
             {/* Sidebar */}
-            <div className="w-60 bg-slate-900 text-white flex flex-col py-6 px-4 gap-4">
-                <h2 className="text-2xl font-bold mb-6 text-center">Menu</h2>
+            <div className="w-60 bg-gradient-to-t from-slate-900 via-slate-700 to-slate-600 text-white flex flex-col py-6 px-4 gap-4">
+                <img src={logo} className="w-[60%]" alt="" style={{alignSelf:"center"}} />
 
                 <Button
                     onClick={() => setActive("exams")}
                     variant="ghost"
-                    className="justify-start text-white hover:bg-slate-700"
+                    className="justify-start text-white hover:bg-slate-700 text-lg cursor-pointer"
                 >
-                    <FiBook className="mr-2" /> Imtihonlar
-                </Button>
-
-                <Button
-                    onClick={() => setActive("sections")}
-                    variant="ghost"
-                    className="justify-start text-white hover:bg-slate-700"
-                >
-                    <WalletCards className="mr-2" /> Bo'limlar
+                    <FiBook className="mr-2" /> IMTIHONLAR
                 </Button>
 
                 <Button
                     onClick={() => setActive("results")}
                     variant="ghost"
-                    className="justify-start text-white hover:bg-slate-700"
+                    className="justify-start text-white hover:bg-slate-700 text-lg cursor-pointer"
                 >
-                    <FiBarChart2 className="mr-2" /> Natijalar
+                    <FiBarChart2 className="mr-2" /> NATIJALAR
                 </Button>
 
                 <div className="mt-auto">
@@ -51,7 +43,7 @@ export default function Dashboard() {
                         className="w-full justify-start text-white"
                         onClick={logOut}
                     >
-                        <FiLogOut className="mr-2" /> Log out
+                        <FiLogOut className="mr-2" /> Chiqish
                     </Button>
                 </div>
             </div>

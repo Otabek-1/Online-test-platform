@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { FiEdit, FiTrash, FiEye, FiPlus } from "react-icons/fi";
+import { FiEdit, FiTrash, FiEye, FiPlus, FiBook, FiBarChart2, FiLogOut } from "react-icons/fi";
 import { BiX } from "react-icons/bi";
 import api from "./api";
 import {
@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import logo from "./assets/logo.png"
 
 export default function Sections() {
   const { examId } = useParams();
@@ -27,6 +28,11 @@ export default function Sections() {
   const [editing, setEditing] = useState(null);
   const [name, setName] = useState("");
   const nav = useNavigate()
+  function logOut() {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    nav("/auth");
+  }
 
   // Fetch exam details and related sections on mount
   useEffect(() => {
@@ -82,11 +88,13 @@ export default function Sections() {
     try {
       const res = await api.post("/section/create", {
         name: name.trim(),
+
       });
 
       if (res.status === 200) {
         setCreateOpen(false);
         setName("");
+        await api.put(`/exam/update/${examId}`, { title: exam.title, description: exam.description, section_ids: exam.section_ids?.concat([res.data.data.id]) || [res.data.data.id] })
         await fetchExamAndSections();
       } else {
         setError(res.error || "Bo'lim yaratishda xatolik");
@@ -95,6 +103,7 @@ export default function Sections() {
       setError(err.message || "Bo'lim yaratishda tarmoq xatosi");
     }
   }
+
 
   function openEdit(section) {
     setEditing(section);
@@ -132,7 +141,9 @@ export default function Sections() {
     try {
       const res = await api.delete(`/section/delete/${sectionId}`);
 
-      if (res.success) {
+      if (res.status == 200) {
+        await api.put(`/exam/update/${examId}`, { title: exam.title, description: exam.description, section_ids: exam.section_ids?.filter(id => id != sectionId) || [] })
+
         await fetchExamAndSections();
       } else {
         setError(res.error || "Bo'lim o'chirishda xatolik");
@@ -143,109 +154,141 @@ export default function Sections() {
   }
 
   return (
-    <div className="p-6 ">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold">
-          {exam?.title || "Imtihon"} bo'limlari
-        </h1>
+    <div className=" w-full flex h-screen">
+      {/* Sidebar */}
+      <div className="w-60 bg-gradient-to-t from-slate-900 via-slate-700 to-slate-600 text-white flex flex-col py-6 px-4 gap-4">
+        <img src={logo} className="w-[60%]" alt="" style={{ alignSelf: "center" }} />
 
         <Button
-          onClick={openCreate}
-          title="Yangi bo'lim qo'shish"
-          className="p-2"
+          onClick={() => { nav("/dashboard"); localStorage.setItem("active", "exams") }}
+          variant="ghost"
+          className="justify-start text-white hover:bg-slate-700 text-lg cursor-pointer"
         >
-          <FiPlus />
+          <FiBook className="mr-2" /> IMTIHONLAR
         </Button>
-      </div>
 
-      {/* Error Banner */}
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4 flex items-center justify-between">
-          <span>{error}</span>
-          <button
-            onClick={() => setError(null)}
-            className="text-red-700 hover:text-red-900"
+        <Button
+          onClick={() => { nav("/dashboard"); localStorage.setItem("active", "results") }}
+          variant="ghost"
+          className="justify-start text-white hover:bg-slate-700 text-lg cursor-pointer"
+        >
+          <FiBarChart2 className="mr-2" /> NATIJALAR
+        </Button>
+
+        <div className="mt-auto">
+          <Button
+            variant="destructive"
+            className="w-full justify-start text-white"
+            onClick={logOut}
           >
-            <BiX />
-          </button>
+            <FiLogOut className="mr-2" /> Chiqish
+          </Button>
         </div>
-      )}
+      </div>
+      <div className="flex flex-col w-full p-6">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-semibold">
+            {exam?.title || "Imtihon"} bo'limlari
+          </h1>
 
-      {/* Loading */}
-      {loading && (
-        <div className="text-center py-6">
-          <p className="text-gray-500">Yuklanmoqda...</p>
+          <Button
+            onClick={openCreate}
+            title="Yangi bo'lim qo'shish"
+            className="p-2"
+          >
+            <FiPlus />
+          </Button>
         </div>
-      )}
 
-      {/* Table */}
-      {!loading && (
-        <div className="border rounded-lg bg-white shadow-sm">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-20">ID</TableHead>
-                <TableHead>Nomi</TableHead>
-                <TableHead className="text-right w-56">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
+        {/* Error Banner */}
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4 flex items-center justify-between">
+            <span>{error}</span>
+            <button
+              onClick={() => setError(null)}
+              className="text-red-700 hover:text-red-900"
+            >
+              <BiX />
+            </button>
+          </div>
+        )}
 
-            <TableBody>
-              {sections.length === 0 ? (
+        {/* Loading */}
+        {loading && (
+          <div className="text-center py-6">
+            <p className="text-gray-500">Yuklanmoqda...</p>
+          </div>
+        )}
+
+        {/* Table */}
+        {!loading && (
+          <div className="border rounded-lg bg-white shadow-sm">
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan="3" className="text-center py-6 text-gray-500">
-                    Bu imtihonga bo'lim qo'shilmadi
-                  </TableCell>
+                  <TableHead className="w-20">ID</TableHead>
+                  <TableHead>Nomi</TableHead>
+                  <TableHead className="text-right w-56">Actions</TableHead>
                 </TableRow>
-              ) : (
-                sections.map((section) => (
-                  <TableRow key={section.id}>
-                    <TableCell>{section.id}</TableCell>
-                    <TableCell className="font-medium">{section.name}</TableCell>
+              </TableHeader>
 
-                    <TableCell className="text-right flex justify-end gap-2">
-                      {/* Testlarni ko'rish - use Link to navigate */}
-                      <Link to={`/tests/${section.id}`}>
+              <TableBody>
+                {sections.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan="3" className="text-center py-6 text-gray-500">
+                      Bu imtihonga bo'lim qo'shilmadi
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  sections.map((section) => (
+                    <TableRow key={section.id}>
+                      <TableCell>{section.id}</TableCell>
+                      <TableCell className="font-medium">{section.name}</TableCell>
+
+                      <TableCell className="text-right flex justify-end gap-2">
+                        {/* Testlarni ko'rish - use Link to navigate */}
+                        <Link to={`/tests/${section.id}`}>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            title="Testlarni ko'rish"
+                            className="p-2"
+                          >
+                            Testlar +
+                          </Button>
+                        </Link>
+
+                        {/* Edit */}
                         <Button
                           size="sm"
                           variant="outline"
-                          title="Testlarni ko'rish"
+                          title="Tahrirlash"
                           className="p-2"
+                          onClick={() => openEdit(section)}
                         >
-                          <FiEye />
+                          <FiEdit />
                         </Button>
-                      </Link>
 
-                      {/* Edit */}
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        title="Tahrirlash"
-                        className="p-2"
-                        onClick={() => openEdit(section)}
-                      >
-                        <FiEdit />
-                      </Button>
-
-                      {/* Delete */}
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        title="O'chirish"
-                        className="p-2"
-                        onClick={() => handleDelete(section.id)}
-                      >
-                        <FiTrash />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      )}
+                        {/* Delete */}
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          title="O'chirish"
+                          className="p-2"
+                          onClick={() => handleDelete(section.id)}
+                        >
+                          <FiTrash />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        )}
+      </div>
 
       {/* Create Modal */}
       {createOpen && (
@@ -305,7 +348,7 @@ export default function Sections() {
         </div>
       )}
 
-      <button onClick={()=>nav(-1)} className="absolute bottom-10 right-10 bg-slate-800 text-white px-4 py-2 text-lg transition-all duration-300 hover:opacity-90 rounded-xl">Ortga</button>
+      <button onClick={() => nav(-1)} className="absolute bottom-10 right-10 bg-slate-800 text-white px-4 py-2 text-lg transition-all duration-300 hover:opacity-90 rounded-xl">Ortga</button>
 
     </div>
   );

@@ -71,8 +71,8 @@ export default function Exams() {
     }
 
     async function handleCreate() {
-        if (!title.trim() || selectedSections.length === 0) {
-            setError("Sarlavha va kamida bitta bo'lim tanlang");
+        if (!title.trim()) {
+            setError("Sarlavha kiritilmagan!");
             return;
         }
 
@@ -80,7 +80,7 @@ export default function Exams() {
             const res = await api.post("/exam/create", {
                 title: title.trim(),
                 description: description.trim(),
-                section_ids: selectedSections,
+                section_ids: [],
             });
 
             if (res.status === 200) {
@@ -198,10 +198,12 @@ export default function Exams() {
             }
         } catch (err) {
             setError(err?.response?.data?.message || "Link olishda xatolik!");
+            console.log(err);
+
         }
     }
     // console.log(exams);
-    
+
 
     return (
         <div className="p-6">
@@ -267,6 +269,11 @@ export default function Exams() {
                                         </TableCell>
 
                                         <TableCell className="text-right flex justify-end gap-2">
+                                            <Link to={`/sections/${exam.id}`}>
+                                                <Button size="sm" variant="outline" title="Bo'limlarni ko'rish" className="p-2">
+                                                    Bo'lim +
+                                                </Button>
+                                            </Link>
                                             <Button
                                                 size="sm"
                                                 variant="outline"
@@ -276,12 +283,6 @@ export default function Exams() {
                                             >
                                                 <FiEdit />
                                             </Button>
-
-                                            <Link to={`/sections/${exam.id}`}>
-                                                <Button size="sm" variant="outline" title="Bo'limlarni ko'rish" className="p-2">
-                                                    <FiEye />
-                                                </Button>
-                                            </Link>
 
                                             <Button
                                                 size="sm"
@@ -338,32 +339,6 @@ export default function Exams() {
                                 placeholder="Imtihon tavsifi"
                             />
                         </div>
-
-                        {/* Sections Multi-Select */}
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium mb-2">Bo'limlarni tanlang</label>
-                            <div className="border rounded p-3 max-h-48 overflow-y-auto">
-                                {sections.length === 0 ? (
-                                    <p className="text-sm text-gray-500">Bo'limlar topilmadi</p>
-                                ) : (
-                                    sections.map(section => (
-                                        <div key={section.id} className="flex items-center gap-2 mb-2">
-                                            <input
-                                                type="checkbox"
-                                                id={`section-${section.id}`}
-                                                checked={selectedSections.includes(section.id)}
-                                                onChange={() => toggleSection(section.id)}
-                                                className="rounded"
-                                            />
-                                            <label htmlFor={`section-${section.id}`} className="text-sm cursor-pointer">
-                                                {section.name}
-                                            </label>
-                                        </div>
-                                    ))
-                                )}
-                            </div>
-                        </div>
-
                         <div className="flex gap-3 justify-end">
                             <button onClick={() => setCreateModalOpen(false)} className="px-4 py-2 bg-gray-200 rounded">
                                 Bekor qilish

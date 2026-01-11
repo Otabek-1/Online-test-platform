@@ -8,7 +8,7 @@ import Dashboard from './Dashboard'
 import Sections from './Sections'
 import Tests from './Tests'
 import TestRunner from './TestRunner'
-import SectionList from './SectionList'
+// import SectionList from './SectionList'
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -19,7 +19,7 @@ createRoot(document.getElementById('root')).render(
       <Route path='/sections/:examId' element={<Sections />}/>
       <Route path='/tests/:sectionId' element={<Tests />}/>
       <Route path='/test/:key' element={<TestRunner />}/>
-      <Route path='/section/list' element={<SectionList />}/>
+      {/* <Route path='/section/list' element={<SectionList />}/> */}
     </Routes>
   </BrowserRouter>
 )

@@ -15,7 +15,7 @@ export default function TestRunner() {
   const [started, setStarted] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   // console.log(sections);
-  
+
   const [userData, setUserData] = useState({
     full_name: "",
     phone: "",
@@ -53,7 +53,8 @@ export default function TestRunner() {
     allQuestions.length > 0 &&
     allQuestions.every((q) => answers[q.id]);
 
-// ============================
+
+  // ============================
   // 2) TESTNI YUBORISH
   // ============================
   const handleSubmit = async () => {
@@ -79,7 +80,7 @@ export default function TestRunner() {
       // console.log("📤 Yuborilayotgan payload:", JSON.stringify(payload, null, 2));
 
       const response = await api.post("/job/submit", payload);
-      
+
       // console.log("✅ Backend javobi:", response.data);
 
       setSubmitted(true);
@@ -87,7 +88,7 @@ export default function TestRunner() {
       console.error("❌ Submit error:", err);
       console.error("📋 Backend error response:", err.response?.data);
       console.error("📋 Backend status:", err.response?.status);
-      
+
       const errorMsg = err.response?.data?.message || err.response?.data?.error || err.message;
       alert(`Yuborishda xatolik: ${errorMsg}`);
     }
@@ -122,20 +123,20 @@ export default function TestRunner() {
           </h2>
           <div className="space-y-3">
             <Input
-              placeholder="Full name"
+              placeholder="Ism familya"
               value={userData.full_name}
               onChange={(e) =>
                 setUserData({ ...userData, full_name: e.target.value })
               }
             />
             <Input
-              placeholder="Phone"
+              placeholder="Telefon raqam"
               value={userData.phone}
               onChange={(e) =>
                 setUserData({ ...userData, phone: e.target.value })
               }
             />
-            
+
 
             <Button
               className="w-full mt-3"
@@ -155,45 +156,49 @@ export default function TestRunner() {
             <div key={sec.id} className="space-y-4">
               <h2 className="text-xl font-bold">{sec.name}</h2>
 
-              {(sec.questions || []).map((q) => (
-                <Card
-                  key={q.id}
-                  className="p-6 shadow-xl rounded-2xl"
-                >
-                  <h3 className="text-lg font-semibold mb-4">
-                    {q.text}
-                  </h3>
-
-                  <RadioGroup
-                    value={answers[q.id] || ""}
-                    onValueChange={(val) =>
-                      setAnswers((prev) => ({
-                        ...prev,
-                        [q.id]: Number(val),
-                      }))
-                    }
+              {(sec.questions || []).map((q) => {
+                console.log(q);
+                
+                return (
+                  <Card
+                    key={q.id}
+                    className="p-6 shadow-xl rounded-2xl"
                   >
-                    {q.options.map((op, idx) => {
-                      const variant = ["A", "B", "C", "D"][idx] || "";
+                    <h3 className="text-lg font-semibold mb-4">
+                      {q.text}
+                    </h3>
 
-                      return (
-                        <div
-                          key={op.id}
-                          className="flex items-center space-x-2 mb-2"
-                        >
-                          <RadioGroupItem
-                            value={op.id}
-                            id={`q${q.id}-${op.id}`}
-                          />
-                          <Label htmlFor={`q${q.id}-${op.id}`}>
-                            {variant}. {op.text}
-                          </Label>
-                        </div>
-                      );
-                    })}
-                  </RadioGroup>
-                </Card>
-              ))}
+                    <RadioGroup
+                      value={answers[q.id] || ""}
+                      onValueChange={(val) =>
+                        setAnswers((prev) => ({
+                          ...prev,
+                          [q.id]: Number(val),
+                        }))
+                      }
+                    >
+                      {q.options.map((op, idx) => {
+                        const variant = ["A", "B", "C", "D"][idx] || "";
+
+                        return (
+                          <div
+                            key={op.id}
+                            className="flex items-center space-x-2 mb-2"
+                          >
+                            <RadioGroupItem
+                              value={op.id}
+                              id={`q${q.id}-${op.id}`}
+                            />
+                            <Label htmlFor={`q${q.id}-${op.id}`}>
+                              {variant}. {op.text}
+                            </Label>
+                          </div>
+                        );
+                      })}
+                    </RadioGroup>
+                  </Card>
+                )
+              })}
             </div>
           ))}
 
