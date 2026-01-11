@@ -35,6 +35,7 @@ export default function TestRunner() {
         const parsed = JSON.parse(raw); // STRING -> OBJECT
 
         // chiqaramiz: parsed.sections = [ {id, name, questions: [...] } ]
+        console.log("📊 Backend data:", parsed);
         setSections(parsed.sections || []);
       } catch (err) {
         console.error("Test fetch error:", err);
@@ -49,9 +50,10 @@ export default function TestRunner() {
 
   // barcha savollar javob berilganmi?
   const allQuestions = sections.flatMap((s) => s.questions || []);
+  const questionsWithOptions = allQuestions.filter(q => (q.options || []).length > 0);
   const allAnswered =
-    allQuestions.length > 0 &&
-    allQuestions.every((q) => answers[q.id]);
+    questionsWithOptions.length > 0 &&
+    questionsWithOptions.every((q) => answers[q.id]);
 
 
   // ============================
@@ -168,34 +170,38 @@ export default function TestRunner() {
                       {q.text}
                     </h3>
 
-                    <RadioGroup
-                      value={answers[q.id] || ""}
-                      onValueChange={(val) =>
-                        setAnswers((prev) => ({
-                          ...prev,
-                          [q.id]: Number(val),
-                        }))
-                      }
-                    >
-                      {q.options.map((op, idx) => {
-                        const variant = ["A", "B", "C", "D"][idx] || "";
+                    {(q.options || []).length === 0 ? (
+                      <p className="text-gray-500 italic">Bu savol uchun variantlar mavjud emas</p>
+                    ) : (
+                      <RadioGroup
+                        value={answers[q.id] || ""}
+                        onValueChange={(val) =>
+                          setAnswers((prev) => ({
+                            ...prev,
+                            [q.id]: Number(val),
+                          }))
+                        }
+                      >
+                        {((q.options || []).slice(0, 4)).map((op, idx) => {
+                          const variant = ["A", "B", "C", "D"][idx] || "";
 
-                        return (
-                          <div
-                            key={op.id}
-                            className="flex items-center space-x-2 mb-2"
-                          >
-                            <RadioGroupItem
-                              value={op.id}
-                              id={`q${q.id}-${op.id}`}
-                            />
-                            <Label htmlFor={`q${q.id}-${op.id}`}>
-                              {variant}. {op.text}
-                            </Label>
-                          </div>
-                        );
-                      })}
-                    </RadioGroup>
+                          return (
+                            <div
+                              key={op.id}
+                              className="flex items-center space-x-2 mb-2"
+                            >
+                              <RadioGroupItem
+                                value={op.id}
+                                id={`q${q.id}-${op.id}`}
+                              />
+                              <Label htmlFor={`q${q.id}-${op.id}`}>
+                                {variant}. {op.text}
+                              </Label>
+                            </div>
+                          );
+                        })}
+                      </RadioGroup>
+                    )}
                   </Card>
                 )
               })}
